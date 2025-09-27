@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Jarvis</title>
+  <!-- Orbitron Futuristic Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* default = neon blue */
+      --bg: #000;
+      --main: #00fff2;
+      --accent: #007e6f;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--main);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: var(--main);
+      text-shadow: 0 0 10px var(--main), 0 0 20px var(--accent);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    #themeSelector {
+      background: var(--bg);
+      color: var(--main);
+      border: 1px solid var(--main);
+      padding: 8px 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    button {
+      background: linear-gradient(45deg, var(--main), var(--accent));
+      color: #000;
+      border: none;
+      padding: 14px 32px;
+      margin: 10px;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 2px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--main), 0 0 30px var(--accent);
+      transition: all 0.3s ease-in-out;
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, var(--accent), var(--main));
+      box-shadow: 0 0 20px var(--main), 0 0 40px var(--main);
+      transform: scale(1.05);
+    }
+
+    
+    #outputText {
+      margin-top: 20px;
+      font-size: 1.3rem;
+      text-align: center;
+      padding: 20px;
+      border: 1px solid var(--main);
+      border-radius: 20px;
+      width: 80%;
+      max-width: 600px;
+      background: rgba(0, 255, 242, 0.05);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 10px var(--main), 0 0 30px var(--accent) inset;
+    }
+
+    #wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 20px;
+    }
+
+    #wave span {
+      display: block;
+      width: 6px;
+      height: 20px;
+      background: var(--main);
+      border-radius: 3px;
+      animation: waveAnim 1s infinite ease-in-out;
+    }
+
+    #wave span:nth-child(2) { animation-delay: 0.1s; }
+    #wave span:nth-child(3) { animation-delay: 0.2s; }
+    #wave span:nth-child(4) { animation-delay: 0.3s; }
+    #wave span:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes waveAnim {
+      0%, 100% { height: 20px; opacity: 0.7; }
+      50% { height: 40px; opacity: 1; }
+    }
+
+  
+    .theme-purple {
+      --bg: #0d001a;
+      --main: #bb86fc;
+      --accent: #6200ee;
+    }
+
+    .theme-red {
+      --bg: #1a0000;
+      --main: #ff4d4d;
+      --accent: #b30000;
+    }
+  </style>
+</head>
+<body>
+  <h1>🤖 Mini Jarvis</h1>
+  <select id="themeSelector">
+    <option value="">Neon Blue</option>
+    <option value="theme-purple">Cyber Purple</option>
+    <option value="theme-red">Cyber Red</option>
+  </select>
+
+<button onclick="startListening()">🎙 Speak</button>
+
+  <div class="output" id="outputText">Your AI Assistant is ready...</div>
+  <div id="wave">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <script>
+    const output = document.getElementById("outputText");
+
+    function speak(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-US";
+      window.speechSynthesis.speak(speech);
+    }
+
+    function startListening() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+        output.innerHTML = "You said: " + command;
+        processCommand(command);
+      };
+    }
+ const themeSelector = document.getElementById('themeSelector');
+    themeSelector.addEventListener('change', () => {
+      document.body.classList.remove('theme-purple', 'theme-red');
+      const theme = themeSelector.value;
+      if (theme) {
+        document.body.classList.add(theme);
+      }
+      });
+    function processCommand(command) {
+      if (command.includes("hello")) {
+        speak("Hello, I am Jarvis. How can I assist you?");
+      } else if (command.includes("time")) {
+        const time = new Date().toLocaleTimeString();
+        speak("The time is " + time);
+      } else if (command.includes("date")) {
+        const date = new Date().toDateString();
+        speak("Today is " + date); 
+      }
+       else if (command.includes("chat gpt")){
+        speak("opening chatgpt")
+        window.open("https://chatgpt.com/")
+       }
+       else if (command.includes("google")) {
+        speak("Opening Google");
+        window.open("https://www.google.com", "_blank");
+      } else if (command.includes("youtube")) {
+        speak("Opening YouTube");
+        window.open("https://www.youtube.com", "_blank");
+      } else if (command.includes("tracker")) {
+        speak("opening Tracker");
+        window.open("https://zen-streak.vercel.app/");
+      } 
+      else if (command.includes("perplexity")) {
+        speak("opening perplexity");
+        window.open("https://www.perplexity.ai/");
+      }
+      else if (command.includes("gemini")) {
+        speak("opening gemini");
+        window.open("https://gemini.google.com/app");
+      }
+      else if (command.includes("instagram")) {
+        speak("opening instagram");
+        window.open("https://www.instagram.com/");
+      }
+       else if (command.includes("linkedin")) {
+        speak("opening linked in");
+        window.open("https://www.linkedin.com/");
+      }
+      else if (command.includes("game")) {
+  speak("opening game");
+  window.open("https://poki.com");
+}
+else if (command.includes("coding")) {
+  speak("opening code challenges");
+  window.open("https://codingchallenges.fyi");
+
+}
+else if(command.includes("whatsapp")) {
+  speak("opening whatsapp");
+  window.open("https://www.whatsapp.com");
+}
+else if(command.includes("facebook")){
+speak("opening facebook");
+window.open("https://www.facebook.com");
+}
+ 
+  else if  (command.includes("tired")) {
+  const suggestions = [
+    "How about seeing a job profile? Just say 'open linkedin'.",
+    "Would you like me to suggest a tracker?",
+    "I can tell you a riddle or give you a coding challenge!",
+    "Let's play a guessing game! Say 'start game'.",
+    "Want me to open YouTube with some music? just say open youtube",
+  ];
+  const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+  speak(suggestion);
+  return;
+}
+ else  {
+        speak("Sorry, I didn’t understand that.");
+      }
+
+    }
+  </script>
+</body>  
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
